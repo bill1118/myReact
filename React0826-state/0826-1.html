@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // ReactHook - 狀態 useState
+        // 取得uesState方法
+        const { useState } = React;
+
+        function App() {
+            // let num2 = 0;
+            // 陣列中的參數:
+            // 前者是一個變數
+            // 後者是一個寫入變數的方法
+            // useState小括號裡是預設值
+            const [num2, setNum2] = useState(0);
+            return (
+
+                <div>
+                    <button onClick={() => {
+                        //使用setNum2寫入
+                        setNum2(num2 + 1);
+                    }}>+</button>
+                    {num2}
+                </div>
+
+            )
+        }
+
+        ReactDOM
+            .createRoot(document.getElementById('root'))
+            .render(<App />);
+    </script>
+</body>
+
+</html>
