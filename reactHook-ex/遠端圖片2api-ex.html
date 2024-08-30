@@ -29,16 +29,48 @@
                     const { useState, useEffect } = React;
 
                     const App = () => {
+
+                        const [jsonData, setJsonData] = useState([]);
+
                         const getWeather = async () => {
-                            const result = await axios.get();
-                            console.log(result);                           
+                            const result = await axios.get('./F-C0032-001.json');
+                            console.log(result);
+
+                            const { location } = result.data.cwaopendata.dataset;
+                            // console.log(location);
+                            setJsonData(location);
                         }
                         getWeather();
-                        
-                        return (
-                            <div>
 
-                            </div>
+                        return (
+                            <>
+                                <h2>各縣市名稱</h2>
+                                <ul>
+                                    {
+                                        jsonData.map((city) => {
+                                            return (
+                                                <li key={city.locationName}>
+                                                    {city.locationName}</li>
+                                            )
+                                        })
+                                    }
+                                </ul>
+                            </>
+
+
+                            // <div>
+                            //         {
+                            //             jsonData.map((city) => {
+                            //                 return (
+                            //                     <div className='col' key={city.locationName}>
+                            //                         {city.locationName}
+
+                            //                     </div>
+                            //                 )
+                            //             })
+                            //         }
+                            // </div>
+
                         )
                     }
                     ReactDOM
