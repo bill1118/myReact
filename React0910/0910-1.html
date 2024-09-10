@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        a{
+            color: black;
+            text-decoration: none;
+        }
+
+        #wrapper{
+            width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        #filterBtn{
+            padding-bottom: 30px;
+        }
+
+        #filterBtn a{
+            background-color: bisque;
+            border-radius: 30px;
+            margin: 0 10px;
+            padding: 5px 30px;
+        }
+
+        #filterBtn a.active{
+            color: red;
+            font-weight: bold;
+            background-color: antiquewhite;
+            box-shadow: 0 0 3px gray;
+        }
+
+        #filterList ul{
+            width: 800px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        #filterList ul li{
+            width: 150px;
+            float: left;
+            margin: 5px;
+        }
+
+        #filterList ul li img{
+            width: 150px;
+        }
+    </style>
+
+
+
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script><!-- 舊版 -->
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useEffect } = React;
+        function App() {
+            useEffect(() => {
+                $(function () {
+                    /* 變數宣告 */
+                    /* 所有按鈕 */
+                    let setFilter = $('#filterBtn');
+                    /* 按鈕中的超連結元素 */
+                    let filterBtn = setFilter.find('a');
+                    /* 取的ALL按鈕 */
+                    let btnAll = $('.allItem');
+                    /* 取得所有列表中的元素區 */
+                    let setList = $('#filterList');
+                    /* 取的列表中的li */
+                    let filterList = setList.find('li');
+
+                    /* 當任一按鈕被按下時 */
+                    filterBtn.click(function(){
+                        if(!($(this).hasClass('active'))){
+                            let filterClass = $(this).attr('class');
+                            //使用each()方法，篩選列表中一樣的列表明稱
+                            filterList.each(function(){
+                                if($(this).hasClass(filterClass)){
+                                    $(this).css({display:'block'});
+                                }else{
+                                    $(this).css({display:'none'});
+                                }
+                            });
+
+                            filterBtn.removeClass('active');
+                            $(this).addClass('active');
+                        }
+
+                    });
+
+                    btnAll.click(function(){
+                        filterList.each(function(){
+                            $(this).css({display:'block'});
+                        })
+                    })
+                    // btn.click();
+                });
+            }, []);
+            return (
+                <React.Fragment>
+                    <div id='wrapper'>
+                        <div id="filterBtn">
+                            <a href="#" className="allItem">ALL</a>
+                            <a href="#" className="cats">CATS</a>
+                            <a href="#" className="food">FOOD</a>
+                            <a href="#" className="view">VIEW</a>
+                        </div>
+
+
+                        <div id="filterList">
+                            <ul>
+                                <li className="view"><img src="./images/view1.jpg" alt=""/></li>
+                                <li className="cats"><img src="./images/cats1.jpg" alt=""/></li>
+                                <li className="view"><img src="./images/view2.jpg" alt=""/></li>
+                                <li className="cats"><img src="./images/cats2.jpg" alt=""/></li>
+                                <li className="view"><img src="./images/view4.jpg" alt=""/></li>
+                                <li className="view"><img src="./images/view3.jpg" alt=""/></li>
+                                <li className="cats"><img src="./images/cats3.jpg" alt=""/></li>
+                                <li className="view"><img src="./images/view4.jpg" alt=""/></li>
+                                <li className="cats"><img src="./images/cats4.jpg" alt=""/></li>
+                                <li className="food"><img src="./images/food1.jpg" alt=""/></li>
+                                <li className="cats"><img src="./images/cats5.jpg" alt=""/></li>
+                                <li className="food"><img src="./images/food2.jpg" alt=""/></li>
+                                <li className="cats"><img src="./images/cats6.jpg" alt=""/></li>
+                                <li className="food"><img src="./images/food3.jpg" alt=""/></li>
+                                <li className="food"><img src="./images/food4.jpg" alt=""/></li> 
+                            </ul>
+                        </div>
+                    </div>
+                </React.Fragment>
+            )
+        }
+
+        ReactDOM
+            .createRoot(document.getElementById('root'))
+            .render(<App />);
+    </script>
+
+    <script src="./jQuery/js/jquery-1.11.3.min.js"></script>
+</body>
+
+</html>
