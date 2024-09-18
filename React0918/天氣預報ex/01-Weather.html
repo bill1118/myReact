@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>元件應用-天氣預報</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="images/favicon.ico" rel="shortcut icon">
+    <meta charset="UTF-8">
+    <script src="./javascripts/vendor.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.0/redux.min.js"
+        integrity="sha512-1/8Tj23BRrWnKZXeBruk6wTnsMJbi/lJsk9bsRgVwb6j5q39n0A00gFjbCTaDo5l5XrPVv4DZXftrJExhRF/Ug=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+</head>
+
+<body class="bg-lighter">
+    <div class="container main my-5">
+        <div class="row">
+            <main class="col post">
+                <!-- 章節標題 -->
+                <div class="mb-4">
+                    <h1 class="mt-0 text-muted">天氣預報</h1><small>檔名：<code>01-Weather.html</code></small>
+                </div>
+
+                <div id="root"></div>
+                <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+                <script type="text/babel">
+                    // 資料來源：https://data.gov.tw/dataset/6069
+                    // 天氣圖示：https://www.cwb.gov.tw/V8/C/K/Weather_Icon.html
+                    // 因為氣象圖示相當多，所以本範例中僅採用已下載天氣資料為主，其餘圖示同學可至上方氣象局網站下載
+                    (async () => {
+                        const data = await axios.get('./reactEx/F-C0032-001-bak.json');
+                        const { location } = data.data.cwbopendata.dataset;
+                        const options = { hour: 'numeric', minute: 'numeric' }
+                        console.log(location);
+
+
+                        /* 時間元件 => 特定區域的城市邏輯複雜 */
+                        const Time = ({ time }) => {
+                            return (
+                                <React.Fragment>
+                                    <div className="h4 my-2">
+                                        {new Date(time.startTime).toLocaleString(undefined, {
+                                            day: 'numeric'
+                                        })}
+                                    </div>
+                                    {
+                                        new Date(time.startTime).toLocaleString(undefined, {
+                                            hour: 'numeric',
+                                            minute: 'numeric'
+                                        })
+                                    } <br />
+                                    ~<br />
+                                    {
+                                        new Date(time.endTime).toLocaleString(undefined, {
+                                            hour: 'numeric',
+                                            minute: 'numeric'
+                                        })
+                                    } <br />
+                                </React.Fragment>
+                            )
+                        }
+
+                        /* 卡片元件 => 可重複使用 */
+                        const Card = ({ city }) => {
+                            return (
+                                <div className="card text-center">
+                                    <div className="card-header">
+                                        <div className="h4 my-0">
+                                            {city.locationName}
+                                        </div>
+                                    </div>
+                                    <div className="card-body">
+                                        <div className="row row-cols-3">
+                                            {
+                                                city.weatherElement[0].time.map((time, index) => {
+                                                    return (
+                                                        <div className="col" key={index}>
+                                                            <Time time={time} />
+                                                            <img src={`./reactEx/weatherIcon/${time.parameter.parameterName}.svg`} alt="" />
+                                                            <div className="mt-2">{time.parameter.parameterName}</div>
+                                                            <div className="mt-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-umbrella-fill" viewBox="0 0 16 16">
+                                                                    <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .5.5v.514C12.625 1.238 16 4.22 16 8c0 0 0 .5-.5.5-.149 0-.352-.145-.352-.145l-.004-.004-.025-.023a3.5 3.5 0 0 0-.555-.394A3.17 3.17 0 0 0 13 7.5c-.638 0-1.178.213-1.564.434a3.5 3.5 0 0 0-.555.394l-.025.023-.003.003s-.204.146-.353.146-.352-.145-.352-.145l-.004-.004-.025-.023a3.5 3.5 0 0 0-.555-.394 3.3 3.3 0 0 0-1.064-.39V13.5H8h.5v.039l-.005.083a3 3 0 0 1-.298 1.102 2.26 2.26 0 0 1-.763.88C7.06 15.851 6.587 16 6 16s-1.061-.148-1.434-.396a2.26 2.26 0 0 1-.763-.88 3 3 0 0 1-.302-1.185v-.025l-.001-.009v-.003s0-.002.5-.002h-.5V13a.5.5 0 0 1 1 0v.506l.003.044a2 2 0 0 0 .195.726c.095.191.23.367.423.495.19.127.466.229.879.229s.689-.102.879-.229c.193-.128.328-.304.424-.495a2 2 0 0 0 .197-.77V7.544a3.3 3.3 0 0 0-1.064.39 3.5 3.5 0 0 0-.58.417l-.004.004S5.65 8.5 5.5 8.5s-.352-.145-.352-.145l-.004-.004a3.5 3.5 0 0 0-.58-.417A3.17 3.17 0 0 0 3 7.5c-.638 0-1.177.213-1.564.434a3.5 3.5 0 0 0-.58.417l-.004.004S.65 8.5.5 8.5C0 8.5 0 8 0 8c0-3.78 3.375-6.762 7.5-6.986V.5A.5.5 0 0 1 8 0" />
+                                                                </svg>
+                                                                <i className="bi bi-umbrella-fill"></i>
+                                                                {city.weatherElement[4].time[index].parameter.parameterName}%</div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
+
+
+
+
+                        const App = () => {
+                            return (
+                                <React.Fragment>
+                                    <h2 className="my-3">三十六小時天氣預報</h2>
+                                    <div className="row row-cols-2 g-4">
+                                        {
+                                            location.map((city) => {
+                                                return (
+                                                    <div className="col" key={city.locationName}>
+                                                        <Card city={city} />
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                    </div>
+                                </React.Fragment>
+                            );
+                        };
+
+                        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+                    })();
+                </script>
+            </main>
+        </div>
+    </div>
+    <link rel="stylesheet" href="./stylesheets/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+</body>
+
+</html>
